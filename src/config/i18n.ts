@@ -31,6 +31,14 @@ export interface TranslationDictionary {
   back: string;
   exitTutorial: string;
   replayAudio: string;
+  playAudio: string;
+  pauseAudio: string;
+  resumeAudio: string;
+  audioPaused: string;
+  muteAudio: string;
+  unmuteAudio: string;
+  exitConfirmTitle: string;
+  exitConfirmDesc: string;
   soundPlaying: string;
   deviceFrame: string;
   fullscreen: string;
@@ -41,6 +49,20 @@ export interface TranslationDictionary {
   soundSpeed: string;
   normalSpeed: string;
   slowSpeed: string;
+  exampleQuestions: string;
+  examplePhoto: string;
+  exampleBalance: string;
+  exampleQR: string;
+  micErrorNotice: string;
+  unsupportedTitle: string;
+  findingMatch: string;
+  fontSizeTitle: string;
+  fontSizeDescription: string;
+  sampleText: string;
+  resetDefaultSize: string;
+  smallerText: string;
+  largerText: string;
+  textSizeCurrent: string;
   languages: {
     en: string;
     hi: string;
@@ -80,6 +102,14 @@ export const I18N: Record<SupportedLanguage, TranslationDictionary> = {
     back: 'Back',
     exitTutorial: 'Exit',
     replayAudio: 'Repeat Voice',
+    playAudio: 'Play Voice',
+    pauseAudio: 'Pause Voice',
+    resumeAudio: 'Resume Voice',
+    audioPaused: 'Voice paused',
+    muteAudio: 'Mute',
+    unmuteAudio: 'Unmute',
+    exitConfirmTitle: 'Exit Tutorial?',
+    exitConfirmDesc: 'Your current step progress will not be saved.',
     soundPlaying: 'Playing instruction...',
     deviceFrame: 'Mobile View',
     fullscreen: 'Fullscreen',
@@ -90,6 +120,20 @@ export const I18N: Record<SupportedLanguage, TranslationDictionary> = {
     soundSpeed: 'Narration Speed',
     normalSpeed: 'Normal',
     slowSpeed: 'Slow & Clear',
+    exampleQuestions: 'Try asking:',
+    examplePhoto: 'Send a photo',
+    exampleBalance: 'Check bank balance',
+    exampleQR: 'Pay with QR code',
+    micErrorNotice: 'Microphone unavailable or permission denied. Please type below.',
+    unsupportedTitle: 'Task Not Supported',
+    findingMatch: 'Finding matching tutorial...',
+    fontSizeTitle: 'Text Size',
+    fontSizeDescription: 'Adjust text size across the entire application for easier reading.',
+    sampleText: 'This is how instructions and messages will look.',
+    resetDefaultSize: 'Reset to Default (20sp)',
+    smallerText: 'Smaller',
+    largerText: 'Larger',
+    textSizeCurrent: 'Current Text Size',
     languages: {
       en: 'English',
       hi: 'हिन्दी',
@@ -127,6 +171,14 @@ export const I18N: Record<SupportedLanguage, TranslationDictionary> = {
     back: 'पीछे',
     exitTutorial: 'बाहर जाएं',
     replayAudio: 'आवाज़ दोबारा सुनें',
+    playAudio: 'आवाज़ चलाएं',
+    pauseAudio: 'आवाज़ रोकें',
+    resumeAudio: 'आवाज़ जारी रखें',
+    audioPaused: 'आवाज़ रोकी गई है',
+    muteAudio: 'म्यूट',
+    unmuteAudio: 'आवाज़ चालू करें',
+    exitConfirmTitle: 'ट्यूटोरियल छोड़ें?',
+    exitConfirmDesc: 'आपकी वर्तमान प्रगति सुरक्षित नहीं होगी।',
     soundPlaying: 'निर्देश सुनाया जा रहा है...',
     deviceFrame: 'फ़ोन व्यू',
     fullscreen: 'फुल स्क्रीन',
@@ -137,6 +189,20 @@ export const I18N: Record<SupportedLanguage, TranslationDictionary> = {
     soundSpeed: 'बोलने की गति',
     normalSpeed: 'सामान्य',
     slowSpeed: 'धीमी और स्पष्ट',
+    exampleQuestions: 'उदाहरण प्रश्न:',
+    examplePhoto: 'फ़ोटो भेजें',
+    exampleBalance: 'बैंक बैलेंस चेक करें',
+    exampleQR: 'क्यूआर कोड से पैसे दें',
+    micErrorNotice: 'माइक उपलब्ध नहीं है या अनुमति नहीं मिली। कृपया नीचे टाइप करें।',
+    unsupportedTitle: 'सुविधा उपलब्ध नहीं है',
+    findingMatch: 'ट्यूटोरियल खोज रहे हैं...',
+    fontSizeTitle: 'अक्षरों का आकार',
+    fontSizeDescription: 'आसानी से पढ़ने के लिए पूरे ऐप में अक्षरों का आकार बदलें।',
+    sampleText: 'निर्देश और संदेश इस आकार में दिखाई देंगे।',
+    resetDefaultSize: 'डिफ़ॉल्ट पर रीसेट करें (20sp)',
+    smallerText: 'छोटा',
+    largerText: 'बड़ा',
+    textSizeCurrent: 'वर्तमान आकार',
     languages: {
       en: 'English',
       hi: 'हिन्दी',
@@ -174,6 +240,14 @@ export const I18N: Record<SupportedLanguage, TranslationDictionary> = {
     back: 'മടങ്ങുക',
     exitTutorial: 'പുറത്ത് കടക്കുക',
     replayAudio: 'ശബ്ദം വീണ്ടും കേൾക്കുക',
+    playAudio: 'ശബ്ദം കേൾക്കുക',
+    pauseAudio: 'ശബ്ദം നിർത്തുക',
+    resumeAudio: 'ശബ്ദം തുടരുക',
+    audioPaused: 'ശബ്ദം താൽക്കാലികമായി നിർത്തി',
+    muteAudio: 'ശബ്ദം നിർത്തുക',
+    unmuteAudio: 'ശബ്ദം കേൾക്കുക',
+    exitConfirmTitle: 'പരിശീലനം നിർത്തണോ?',
+    exitConfirmDesc: 'നിങ്ങൾ ചെയ്ത പുരോഗതി സേവ് ചെയ്യപ്പെടില്ല.',
     soundPlaying: 'നിർദ്ദേശം കേൾപ്പിക്കുന്നു...',
     deviceFrame: 'ഫോൺ കാഴ്ച',
     fullscreen: 'പൂർണ്ണ സ്ക്രീൻ',
@@ -184,6 +258,20 @@ export const I18N: Record<SupportedLanguage, TranslationDictionary> = {
     soundSpeed: 'ശബ്ദ വേഗത',
     normalSpeed: 'സാധാരണ',
     slowSpeed: 'പതുക്കെ & വ്യക്തമായി',
+    exampleQuestions: 'ഉദാഹരണങ്ങൾ:',
+    examplePhoto: 'ഫോട്ടോ അയക്കുക',
+    exampleBalance: 'ബാങ്ക് ബാലൻസ് അറിയുക',
+    exampleQR: 'ക്യുആർ കോഡ് സ്കാൻ',
+    micErrorNotice: 'മൈക്രോഫോൺ ലഭ്യമല്ല അല്ലെങ്കിൽ അനുമതി നിരസിച്ചു. താഴെ ടൈപ്പ് ചെയ്യുക.',
+    unsupportedTitle: 'സേവനം ലഭ്യമല്ല',
+    findingMatch: 'പാഠം കണ്ടെത്തുന്നു...',
+    fontSizeTitle: 'അക്ഷരങ്ങളുടെ വലിപ്പം',
+    fontSizeDescription: 'സുഖമായി വായിക്കുന്നതിനായി ആപ്പിലെ അക്ഷരങ്ങളുടെ വലിപ്പം മാറ്റുക.',
+    sampleText: 'നിർദ്ദേശങ്ങളും സന്ദേശങ്ങളും ഇങ്ങനെ കാണാം.',
+    resetDefaultSize: 'സാധാരണ വലിപ്പത്തിലേക്ക് മാറ്റുക (20sp)',
+    smallerText: 'ചെറുത്',
+    largerText: 'വലുത്',
+    textSizeCurrent: 'നിലവിലെ വലിപ്പം',
     languages: {
       en: 'English',
       hi: 'हिन्दी',
