@@ -30,5 +30,10 @@ export interface AppProfile {
   language: SupportedLanguage;
   completedTasks: string[];
   apiKey?: string;
+  speechRate?: number;
+  isMuted?: boolean;
   firstLaunchCompleted: boolean;
+  fontSize?: number;
 }
+
+
