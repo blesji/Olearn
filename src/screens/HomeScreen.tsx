@@ -17,7 +17,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const t = I18N[language] || I18N.en;
 
   return (
-    <div className="h-full w-full bg-slate-100 flex flex-col justify-between p-5 select-none animate-fade-in">
+    <div className="h-full w-full bg-slate-100 flex flex-col justify-between p-4 sm:p-5 select-none animate-fade-in overflow-y-auto">
       {/* App Header */}
       <div className="pt-2 text-center space-y-1">
         <div className="inline-flex items-center space-x-2 bg-amber-200 text-amber-950 font-bold px-4 py-1.5 rounded-full text-base border border-amber-400">

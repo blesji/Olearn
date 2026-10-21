@@ -1,0 +1,18 @@
+{
+  "name": "OLearn - Senior Digital Literacy Trainer",
+  "short_name": "OLearn",
+  "description": "Step-by-step smartphone trainer for elderly and low-literacy users in India",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#075E54",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

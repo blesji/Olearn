@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SupportedLanguage } from '../types/task';
 import { HighlightTarget } from '../engine/HighlightTarget';
 import {
@@ -10,13 +10,12 @@ import {
   Send,
   Image,
   FileText,
-  Headphones,
-  MapPin,
-  User,
   PhoneOff,
   Smile,
   ArrowLeft,
-  CheckCheck
+  CheckCheck,
+  Play,
+  ShieldAlert
 } from 'lucide-react';
 
 interface WhatsAppReplicaProps {
@@ -25,6 +24,8 @@ interface WhatsAppReplicaProps {
   language: SupportedLanguage;
   onCorrectTap: () => void;
   onWrongTap: () => void;
+  taskId?: string;
+  stepIndex?: number;
 }
 
 export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
@@ -32,15 +33,56 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
   highlightElement,
   language,
   onCorrectTap,
-  onWrongTap
+  onWrongTap,
+  taskId,
+  stepIndex = 0
 }) => {
+  const [textSent, setTextSent] = useState(false);
+  const [voiceNoteSent, setVoiceNoteSent] = useState(false);
+  const [photoSent, setPhotoSent] = useState(false);
+
+  useEffect(() => {
+    if (stepIndex === 0) {
+      setTextSent(false);
+      setVoiceNoteSent(false);
+      setPhotoSent(false);
+    }
+  }, [stepIndex, taskId]);
+
+  const handleSendText = () => {
+    setTextSent(true);
+    onCorrectTap();
+  };
+
+  const handleSendVoiceNote = () => {
+    setVoiceNoteSent(true);
+    onCorrectTap();
+  };
+
+  const handleSendPhoto = () => {
+    setPhotoSent(true);
+    onCorrectTap();
+  };
+
   const contactName = language === 'hi' ? 'रमेश (बेटा)' : language === 'ml' ? 'രമേഷ് (മകൻ)' : 'Ramesh (Son)';
 
   // 1. ACTIVE VOICE CALL SCREEN
   if (screen === 'whatsapp_active_voice_call') {
     return (
-      <div className="h-full w-full bg-slate-900 text-white flex flex-col justify-between items-center py-10 px-6">
-        <div className="flex flex-col items-center space-y-4 text-center mt-6">
+      <div className="h-full w-full bg-slate-900 text-white flex flex-col justify-between items-center py-6 px-6">
+        {/* Prominent Simulation Distinguisher */}
+        <div className="bg-amber-500/20 border-2 border-amber-400 text-amber-200 px-4 py-2 rounded-2xl text-center text-base font-bold shadow-md flex items-center justify-center space-x-2">
+          <ShieldAlert className="w-5 h-5 text-amber-300 flex-shrink-0" />
+          <span>
+            {language === 'hi'
+              ? 'सुरक्षित अभ्यास सिम्युलेटर • कोई वास्तविक कॉल नहीं'
+              : language === 'ml'
+              ? 'സുരക്ഷിത പരിശീലനം • യഥാർത്ഥ കോളല്ല'
+              : 'Simulation Mode • Safe Practice • No Real Call'}
+          </span>
+        </div>
+
+        <div className="flex flex-col items-center space-y-4 text-center my-auto">
           <div className="w-28 h-28 bg-emerald-700 rounded-full flex items-center justify-center text-4xl font-bold border-4 border-emerald-500 shadow-xl">
             R
           </div>
@@ -72,6 +114,18 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
   if (screen === 'whatsapp_active_video_call') {
     return (
       <div className="h-full w-full bg-slate-900 text-white relative flex flex-col justify-between items-center p-6">
+        {/* Prominent Simulation Distinguisher */}
+        <div className="bg-amber-500/20 border-2 border-amber-400 text-amber-200 px-4 py-2 rounded-2xl text-center text-base font-bold shadow-md flex items-center justify-center space-x-2 z-30">
+          <ShieldAlert className="w-5 h-5 text-amber-300 flex-shrink-0" />
+          <span>
+            {language === 'hi'
+              ? 'सुरक्षित अभ्यास सिम्युलेटर • कोई वास्तविक कॉल नहीं'
+              : language === 'ml'
+              ? 'സുരക്ഷിത പരിശീലനം • യഥാർത്ഥ കോളല്ല'
+              : 'Simulation Mode • Safe Practice • No Real Call'}
+          </span>
+        </div>
+
         {/* Mock Remote Video Stream */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-950 flex flex-col items-center justify-center opacity-90">
           <div className="w-36 h-36 bg-emerald-800 rounded-full flex items-center justify-center text-5xl font-bold border-4 border-emerald-400 mb-4 shadow-2xl">
@@ -82,7 +136,7 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
         </div>
 
         {/* Self View Floating Window */}
-        <div className="absolute top-6 right-6 w-28 h-36 bg-slate-700 border-2 border-white rounded-2xl shadow-xl flex flex-col items-center justify-center overflow-hidden z-20">
+        <div className="absolute top-16 right-6 w-28 h-36 bg-slate-700 border-2 border-white rounded-2xl shadow-xl flex flex-col items-center justify-center overflow-hidden z-20">
           <span className="text-3xl">👵</span>
           <span className="text-xs text-white font-bold mt-1">You</span>
         </div>
@@ -137,11 +191,15 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
           <HighlightTarget
             elementId="preview_send_button"
             activeHighlightId={highlightElement}
-            onCorrectTap={onCorrectTap}
+            onCorrectTap={handleSendPhoto}
             onWrongTap={onWrongTap}
           >
             <div className="w-16 h-16 bg-emerald-600 hover:bg-emerald-700 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
-              <Send className="w-8 h-8 text-white ml-0.5" />
+              {photoSent ? (
+                <CheckCheck className="w-8 h-8 text-white" />
+              ) : (
+                <Send className="w-8 h-8 text-white ml-0.5" />
+              )}
             </div>
           </HighlightTarget>
         </div>
@@ -202,32 +260,60 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
   }
 
   // 5. STANDARD CHAT SCREEN / ATTACHMENT SHEET / DIALOGS
+  const knownChatScreens = new Set([
+    'whatsapp_chat_screen',
+    'whatsapp_chat_screen_typed',
+    'whatsapp_attachment_sheet',
+    'whatsapp_call_confirm_dialog',
+    'whatsapp_video_confirm_dialog',
+    'whatsapp_voice_recording_screen'
+  ]);
+
+  if (screen && !knownChatScreens.has(screen)) {
+    return (
+      <div className="h-full w-full bg-slate-100 flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-amber-700 mb-3 font-bold text-2xl">
+          !
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 mb-2">Simulation Screen Not Found</h3>
+        <p className="text-lg text-gray-600 font-semibold max-w-xs">
+          The requested WhatsApp screen "{screen}" is not recognized by the replica engine.
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-full w-full flex flex-col justify-between bg-[#EFEAE2] relative">
-      {/* WhatsApp Header */}
-      <div className="bg-[#075E54] text-white px-3 py-3 flex items-center justify-between shadow-md z-10">
-        <div className="flex items-center space-x-2.5">
-          <ArrowLeft className="w-6 h-6 text-white" />
-          <div className="w-12 h-12 bg-emerald-800 rounded-full flex items-center justify-center text-2xl font-bold border border-emerald-300">
+    <div className="h-full w-full flex flex-col justify-between bg-[#EFEAE2] relative overflow-hidden">
+      {/* Region C: Simulated Application Header */}
+      <div className="bg-[#075E54] text-white px-2.5 py-2 flex items-center justify-between shadow-md z-10 shrink-0 min-h-[56px] w-full gap-2">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <ArrowLeft className="w-5 h-5 text-white shrink-0" />
+          <div className="w-10 h-10 bg-emerald-800 rounded-full flex items-center justify-center text-lg font-bold border border-emerald-300/80 shrink-0">
             R
           </div>
-          <div>
-            <div className="text-xl font-bold leading-tight">{contactName}</div>
-            <div className="text-sm text-emerald-200 font-semibold">online</div>
+          <div className="min-w-0 flex-1">
+            <div className="text-base sm:text-lg font-bold leading-tight truncate font-malayalam">
+              {contactName}
+            </div>
+            <div className="text-xs text-emerald-200 font-semibold leading-none mt-0.5">
+              online
+            </div>
           </div>
         </div>
 
-        {/* Call and Video Call Icons in Header */}
-        <div className="flex items-center space-x-4">
+        {/* Call and Video Call Icons in Header with consistent touch targets */}
+        <div className="flex items-center gap-1 shrink-0">
           <HighlightTarget
             elementId="video_call_icon"
             activeHighlightId={highlightElement}
             onCorrectTap={onCorrectTap}
             onWrongTap={onWrongTap}
-            className="p-1.5"
+            badgePosition="top-left"
+            className="p-1"
           >
-            <div className="w-11 h-11 bg-emerald-800/80 rounded-full flex items-center justify-center hover:bg-emerald-700">
-              <Video className="w-7 h-7 text-white" />
+            <div className="w-10 h-10 bg-emerald-800/80 rounded-full flex items-center justify-center hover:bg-emerald-700 transition-colors">
+              <Video className="w-5 h-5 text-white" />
             </div>
           </HighlightTarget>
 
@@ -236,51 +322,84 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
             activeHighlightId={highlightElement}
             onCorrectTap={onCorrectTap}
             onWrongTap={onWrongTap}
-            className="p-1.5"
+            badgePosition="top-left"
+            className="p-1"
           >
-            <div className="w-11 h-11 bg-emerald-800/80 rounded-full flex items-center justify-center hover:bg-emerald-700">
-              <Phone className="w-7 h-7 text-white" />
+            <div className="w-10 h-10 bg-emerald-800/80 rounded-full flex items-center justify-center hover:bg-emerald-700 transition-colors">
+              <Phone className="w-5 h-5 text-white" />
             </div>
           </HighlightTarget>
         </div>
       </div>
 
-      {/* Chat Messages Body */}
-      <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+      {/* Region D: Simulated Conversation Area */}
+      <div className="flex-1 p-3 sm:p-4 space-y-3 overflow-y-auto min-h-0 custom-scrollbar">
         <div className="flex justify-center">
-          <span className="bg-amber-100 text-gray-800 text-base font-semibold px-4 py-1.5 rounded-xl shadow-sm border border-amber-300">
+          <span className="bg-amber-100 text-gray-800 text-xs sm:text-sm font-semibold px-3 py-1 rounded-xl shadow-sm border border-amber-300">
             {language === 'hi' ? 'आज' : language === 'ml' ? 'ഇന്ന്' : 'Today'}
           </span>
         </div>
 
         {/* Received Message Bubble */}
         <div className="flex justify-start">
-          <div className="bg-white text-gray-900 rounded-2xl rounded-tl-none p-3.5 shadow-sm max-w-[85%] border border-gray-200">
-            <p className="text-xl font-medium leading-snug">
+          <div className="bg-white text-gray-900 rounded-2xl rounded-tl-none p-3 shadow-sm max-w-[85%] border border-gray-200">
+            <p className="text-base sm:text-lg font-medium leading-relaxed font-malayalam">
               {language === 'hi'
                 ? 'नमस्ते माँ / पिताजी! आप कैसे हैं?'
                 : language === 'ml'
                 ? 'നമസ്കാരം, സുഖമാണോ?'
                 : 'Hello! How are you doing today?'}
             </p>
-            <div className="text-xs text-gray-500 text-right mt-1 font-semibold">10:15 AM</div>
+            <div className="text-[11px] text-gray-500 text-right mt-1 font-semibold">10:15 AM</div>
           </div>
         </div>
 
-        {/* Typed message preview when in step 2 of sending text */}
-        {screen === 'whatsapp_chat_screen_typed' && (
-          <div className="flex justify-end">
-            <div className="bg-[#D9FDD3] text-gray-900 rounded-2xl rounded-tr-none p-3.5 shadow-sm max-w-[85%] border border-emerald-200">
-              <p className="text-xl font-semibold leading-snug">
+        {/* Outgoing typed message - only appears after send action */}
+        {textSent && (
+          <div className="flex justify-end animate-fade-in">
+            <div className="bg-[#D9FDD3] text-gray-900 rounded-2xl rounded-tr-none p-3 shadow-sm max-w-[85%] border border-emerald-200">
+              <p className="text-base sm:text-lg font-semibold leading-relaxed font-malayalam">
                 {language === 'hi'
                   ? 'मैं ठीक हूँ बेटा, सब कुशल है।'
                   : language === 'ml'
                   ? 'ഞാൻ ഇവിടെ സുഖമായിരിക്കുന്നു മകനേ.'
                   : 'I am doing well son, all good!'}
               </p>
-              <div className="text-xs text-emerald-800 text-right mt-1 font-bold flex items-center justify-end space-x-1">
+              <div className="text-[11px] text-emerald-800 text-right mt-1 font-bold flex items-center justify-end space-x-1">
                 <span>10:16 AM</span>
-                <CheckCheck className="w-4 h-4 text-emerald-600" />
+                <CheckCheck className="w-3.5 h-3.5 text-emerald-600" />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Outgoing voice note bubble - only appears after send action */}
+        {voiceNoteSent && (
+          <div className="flex justify-end animate-fade-in">
+            <div className="bg-[#D9FDD3] text-gray-900 rounded-2xl rounded-tr-none p-3 shadow-sm max-w-[85%] border border-emerald-200 flex items-center space-x-2.5">
+              <div className="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center text-white shadow-sm shrink-0">
+                <Play className="w-5 h-5 fill-white ml-0.5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-1 mb-1">
+                  <div className="h-3.5 w-1 bg-emerald-700 rounded-full" />
+                  <div className="h-5 w-1 bg-emerald-700 rounded-full" />
+                  <div className="h-2.5 w-1 bg-emerald-700 rounded-full" />
+                  <div className="h-6 w-1 bg-emerald-700 rounded-full" />
+                  <div className="h-4 w-1 bg-emerald-700 rounded-full" />
+                  <div className="h-7 w-1 bg-emerald-700 rounded-full" />
+                  <div className="h-3.5 w-1 bg-emerald-700 rounded-full" />
+                  <div className="h-5 w-1 bg-emerald-700 rounded-full" />
+                  <div className="h-2.5 w-1 bg-emerald-700 rounded-full" />
+                  <div className="h-4 w-1 bg-emerald-700 rounded-full" />
+                </div>
+                <div className="flex items-center justify-between text-[11px] text-emerald-900 font-bold">
+                  <span>0:04</span>
+                  <div className="flex items-center space-x-1">
+                    <span>10:17 AM</span>
+                    <CheckCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -289,11 +408,11 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
 
       {/* Attachment Tray Popup */}
       {screen === 'whatsapp_attachment_sheet' && (
-        <div className="bg-white rounded-t-3xl shadow-2xl p-6 border-t-2 border-gray-300 z-30 animate-fade-in">
-          <div className="text-xl font-bold text-gray-800 mb-4 text-center">
+        <div className="bg-white rounded-t-3xl shadow-2xl p-4 sm:p-5 border-t-2 border-gray-300 z-30 animate-fade-in shrink-0">
+          <div className="text-lg sm:text-xl font-bold text-gray-800 mb-3 text-center">
             {language === 'hi' ? 'अटैच करें' : language === 'ml' ? 'തിരഞ്ഞെടുക്കുക' : 'Share Content'}
           </div>
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-3 gap-3 sm:gap-6">
             <HighlightTarget
               elementId="gallery_icon"
               activeHighlightId={highlightElement}
@@ -301,27 +420,27 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
               onWrongTap={onWrongTap}
             >
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
-                  <Image className="w-9 h-9 text-white" />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-purple-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                  <Image className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <span className="text-lg font-bold text-gray-900 mt-2">
+                <span className="text-sm sm:text-base font-bold text-gray-900 mt-1.5 truncate">
                   {language === 'hi' ? 'गैलरी' : language === 'ml' ? 'ഗ്യാലറി' : 'Gallery'}
                 </span>
               </div>
             </HighlightTarget>
 
             <div onClick={onWrongTap} className="flex flex-col items-center opacity-60">
-              <div className="w-16 h-16 bg-rose-500 rounded-full flex items-center justify-center shadow-md">
-                <Camera className="w-8 h-8 text-white" />
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-rose-500 rounded-full flex items-center justify-center shadow-md">
+                <Camera className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <span className="text-lg font-bold text-gray-700 mt-2">Camera</span>
+              <span className="text-sm sm:text-base font-bold text-gray-700 mt-1.5">Camera</span>
             </div>
 
             <div onClick={onWrongTap} className="flex flex-col items-center opacity-60">
-              <div className="w-16 h-16 bg-indigo-500 rounded-full flex items-center justify-center shadow-md">
-                <FileText className="w-8 h-8 text-white" />
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-indigo-500 rounded-full flex items-center justify-center shadow-md">
+                <FileText className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <span className="text-lg font-bold text-gray-700 mt-2">Document</span>
+              <span className="text-sm sm:text-base font-bold text-gray-700 mt-1.5">Document</span>
             </div>
           </div>
         </div>
@@ -329,18 +448,23 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
 
       {/* Voice Call Confirmation Dialog */}
       {screen === 'whatsapp_call_confirm_dialog' && (
-        <div className="absolute inset-0 bg-black/60 z-40 flex items-center justify-center p-6">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-6 text-center border-2 border-emerald-500">
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
-              <Phone className="w-9 h-9 text-emerald-700" />
+        <div className="absolute inset-0 bg-black/60 z-40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-5 w-full max-w-xs sm:max-w-sm shadow-2xl space-y-4 text-center border-2 border-emerald-500">
+            <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
+              <Phone className="w-7 h-7 text-emerald-700" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">
-              {language === 'hi' ? 'रमेश को वॉइस कॉल करें?' : language === 'ml' ? 'രമേഷിനെ കോൾ ചെയ്യണോ?' : 'Voice Call Ramesh?'}
+            <div className="space-y-1">
+              <div className="text-xl font-bold text-gray-900">
+                {language === 'hi' ? 'रमेश को वॉइस कॉल करें?' : language === 'ml' ? 'രമേഷിനെ കോൾ ചെയ്യണോ?' : 'Voice Call Ramesh?'}
+              </div>
+              <div className="text-xs text-gray-500 font-semibold">
+                {language === 'hi' ? 'सुरक्षित सिमुलेशन • कोई शुल्क नहीं' : language === 'ml' ? 'സുരക്ഷിത പരിശീലനം • ചിലവില്ല' : 'Safe simulation • No cellular charges'}
+              </div>
             </div>
-            <div className="flex space-x-3">
+            <div className="flex space-x-2.5">
               <button
                 onClick={onWrongTap}
-                className="flex-1 py-3 text-xl font-bold text-gray-700 bg-gray-200 rounded-2xl min-h-[56px]"
+                className="flex-1 py-2.5 text-base font-bold text-gray-700 bg-gray-200 rounded-2xl min-h-[48px]"
               >
                 Cancel
               </button>
@@ -351,7 +475,7 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
                 onWrongTap={onWrongTap}
                 className="flex-1"
               >
-                <div className="w-full py-3 bg-emerald-600 text-white rounded-2xl font-bold text-xl min-h-[56px] flex items-center justify-center shadow-lg">
+                <div className="w-full py-2.5 bg-emerald-600 text-white rounded-2xl font-bold text-base min-h-[48px] flex items-center justify-center shadow-lg">
                   {language === 'hi' ? 'कॉल करें' : language === 'ml' ? 'കോൾ' : 'Call'}
                 </div>
               </HighlightTarget>
@@ -362,18 +486,23 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
 
       {/* Video Call Confirmation Dialog */}
       {screen === 'whatsapp_video_confirm_dialog' && (
-        <div className="absolute inset-0 bg-black/60 z-40 flex items-center justify-center p-6">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-6 text-center border-2 border-emerald-500">
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
-              <Video className="w-9 h-9 text-emerald-700" />
+        <div className="absolute inset-0 bg-black/60 z-40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-5 w-full max-w-xs sm:max-w-sm shadow-2xl space-y-4 text-center border-2 border-emerald-500">
+            <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
+              <Video className="w-7 h-7 text-emerald-700" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">
-              {language === 'hi' ? 'रमेश को वीडियो कॉल करें?' : language === 'ml' ? 'വീഡിയോ കോൾ ചെയ്യണോ?' : 'Start Video Call?'}
+            <div className="space-y-1">
+              <div className="text-xl font-bold text-gray-900">
+                {language === 'hi' ? 'रमेश को वीडियो कॉल करें?' : language === 'ml' ? 'വീഡിയോ കോൾ ചെയ്യണോ?' : 'Start Video Call?'}
+              </div>
+              <div className="text-xs text-gray-500 font-semibold">
+                {language === 'hi' ? 'सुरक्षित सिमुलेशन • कैमरा एक्सेस नहीं' : language === 'ml' ? 'സുരക്ഷിത പരിശീലനം • ക്യാമറ ആവശ്യമില്ല' : 'Safe simulation • No real camera access needed'}
+              </div>
             </div>
-            <div className="flex space-x-3">
+            <div className="flex space-x-2.5">
               <button
                 onClick={onWrongTap}
-                className="flex-1 py-3 text-xl font-bold text-gray-700 bg-gray-200 rounded-2xl min-h-[56px]"
+                className="flex-1 py-2.5 text-base font-bold text-gray-700 bg-gray-200 rounded-2xl min-h-[48px]"
               >
                 Cancel
               </button>
@@ -384,7 +513,7 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
                 onWrongTap={onWrongTap}
                 className="flex-1"
               >
-                <div className="w-full py-3 bg-emerald-600 text-white rounded-2xl font-bold text-xl min-h-[56px] flex items-center justify-center shadow-lg">
+                <div className="w-full py-2.5 bg-emerald-600 text-white rounded-2xl font-bold text-base min-h-[48px] flex items-center justify-center shadow-lg">
                   {language === 'hi' ? 'शुरू करें' : language === 'ml' ? 'തുടങ്ങുക' : 'Start Call'}
                 </div>
               </HighlightTarget>
@@ -394,12 +523,12 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
       )}
 
       {/* Voice Note Recording Simulator */}
-      {screen === 'whatsapp_voice_recording_screen' && (
-        <div className="bg-emerald-900 text-white p-4 flex items-center justify-between shadow-2xl border-t-2 border-emerald-600 z-30">
-          <div className="flex items-center space-x-3">
-            <div className="w-4 h-4 bg-rose-500 rounded-full animate-ping" />
-            <span className="text-xl font-bold text-emerald-200">00:04</span>
-            <span className="text-lg text-white font-semibold">
+      {screen === 'whatsapp_voice_recording_screen' && !voiceNoteSent && (
+        <div className="bg-emerald-900 text-white p-3 flex items-center justify-between shadow-2xl border-t-2 border-emerald-600 z-30 shrink-0">
+          <div className="flex items-center space-x-2.5 min-w-0">
+            <div className="w-3.5 h-3.5 bg-rose-500 rounded-full animate-ping shrink-0" />
+            <span className="text-base font-bold text-emerald-200 shrink-0">00:04</span>
+            <span className="text-sm font-semibold truncate font-malayalam">
               {language === 'hi' ? 'आवाज़ रिकॉर्ड हो रही है...' : language === 'ml' ? 'ശബ്ദം റെക്കോർഡ് ചെയ്യുന്നു...' : 'Recording audio note...'}
             </span>
           </div>
@@ -407,31 +536,34 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
           <HighlightTarget
             elementId="send_voice_note_button"
             activeHighlightId={highlightElement}
-            onCorrectTap={onCorrectTap}
+            onCorrectTap={handleSendVoiceNote}
             onWrongTap={onWrongTap}
+            badgePosition="top-left"
+            className="shrink-0"
           >
-            <div className="w-14 h-14 bg-emerald-500 hover:bg-emerald-400 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
-              <Send className="w-7 h-7 text-white ml-0.5" />
+            <div className="w-11 h-11 bg-emerald-500 hover:bg-emerald-400 rounded-full flex items-center justify-center shadow-lg border-2 border-white shrink-0">
+              <Send className="w-5 h-5 text-white ml-0.5" />
             </div>
           </HighlightTarget>
         </div>
       )}
 
-      {/* Bottom Message Input Bar */}
+      {/* Region E: Message Composer (Fully Contained, Flexible Input, No Overflow) */}
       {screen !== 'whatsapp_voice_recording_screen' && (
-        <div className="bg-[#EFEAE2] p-2 flex items-center space-x-2 z-20">
-          <div className="flex-1 bg-white rounded-full flex items-center px-4 py-2.5 shadow-md border border-gray-300">
-            <Smile className="w-7 h-7 text-gray-500 mr-2" />
+        <div className="bg-[#EFEAE2] px-2 py-2 flex items-center gap-1.5 z-20 shrink-0 w-full box-border border-t border-gray-300/60">
+          <div className="flex-1 min-w-0 bg-white rounded-full flex items-center px-3 py-1.5 shadow-sm border border-gray-300 gap-1.5">
+            <Smile className="w-6 h-6 text-gray-500 shrink-0" />
 
             <HighlightTarget
               elementId="chat_input"
               activeHighlightId={highlightElement}
               onCorrectTap={onCorrectTap}
               onWrongTap={onWrongTap}
-              className="flex-1"
+              badgePosition="top-left"
+              className="flex-1 min-w-0 py-0.5"
             >
-              <div className="text-xl text-gray-800 font-medium select-none">
-                {screen === 'whatsapp_chat_screen_typed'
+              <div className="text-sm sm:text-base text-gray-800 font-medium select-none truncate font-malayalam leading-normal">
+                {screen === 'whatsapp_chat_screen_typed' && !textSent
                   ? (language === 'hi' ? 'मैं ठीक हूँ बेटा...' : language === 'ml' ? 'ഞാൻ സുഖമായിരിക്കുന്നു...' : 'I am doing well son...')
                   : (language === 'hi' ? 'संदेश लिखें' : language === 'ml' ? 'സന്ദേശം എഴുതുക' : 'Message')}
               </div>
@@ -442,24 +574,27 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
               activeHighlightId={highlightElement}
               onCorrectTap={onCorrectTap}
               onWrongTap={onWrongTap}
-              className="ml-2"
+              badgePosition="top-left"
+              className="shrink-0"
             >
-              <div className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100">
-                <Paperclip className="w-7 h-7 text-gray-600" />
+              <div className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100">
+                <Paperclip className="w-5 h-5 text-gray-600" />
               </div>
             </HighlightTarget>
           </div>
 
-          {/* Action Button: Send or Mic */}
+          {/* Action Button: Send or Mic (Always visible, shrink-0, min touch-target) */}
           {screen === 'whatsapp_chat_screen_typed' ? (
             <HighlightTarget
               elementId="send_button"
               activeHighlightId={highlightElement}
-              onCorrectTap={onCorrectTap}
+              onCorrectTap={handleSendText}
               onWrongTap={onWrongTap}
+              badgePosition="top-left"
+              className="shrink-0"
             >
-              <div className="w-14 h-14 bg-[#128C7E] hover:bg-[#075E54] rounded-full flex items-center justify-center shadow-md border-2 border-white">
-                <Send className="w-7 h-7 text-white ml-0.5" />
+              <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#128C7E] hover:bg-[#075E54] rounded-full flex items-center justify-center shadow-md border-2 border-white shrink-0 active:scale-95 transition-transform">
+                <Send className="w-5 h-5 text-white ml-0.5" />
               </div>
             </HighlightTarget>
           ) : (
@@ -468,9 +603,11 @@ export const WhatsAppReplica: React.FC<WhatsAppReplicaProps> = ({
               activeHighlightId={highlightElement}
               onCorrectTap={onCorrectTap}
               onWrongTap={onWrongTap}
+              badgePosition="top-left"
+              className="shrink-0"
             >
-              <div className="w-14 h-14 bg-[#128C7E] hover:bg-[#075E54] rounded-full flex items-center justify-center shadow-md border-2 border-white">
-                <Mic className="w-7 h-7 text-white" />
+              <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#128C7E] hover:bg-[#075E54] rounded-full flex items-center justify-center shadow-md border-2 border-white shrink-0 active:scale-95 transition-transform">
+                <Mic className="w-5 h-5 text-white" />
               </div>
             </HighlightTarget>
           )}
